@@ -1,6 +1,6 @@
 
 from aiogram import Bot, Dispatcher, executor
-from aiogram.types import Message, ReplyKeyboardMarkup
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
@@ -23,9 +23,17 @@ class FSMData(StatesGroup):
 
 print("Bot activate")
 
-@dp.message_handler(commands='start', state=None)
-async def start(message: Message):
-    await message.reply("Вас приветствует бот калькулятор.\nНаберите первое число.")
+@dp.message_handler(commands=['start'])
+async def start_command(message: Message):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    btn = KeyboardButton('/calculation')
+    keyboard.add(btn)
+    await message.reply("Вас приветствует Бот_калькулятор\n"
+                        "Для начала нажмите calculation", reply_markup=keyboard)
+
+@dp.message_handler(commands=['calculation']) #, state=None)
+async def calculation(message: Message):
+    await message.reply("Наберите первое число.")
     await FSMData.num_1.set()
 
 @dp.message_handler(state=FSMData.num_1)
