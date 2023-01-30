@@ -5,22 +5,24 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-# from loguru import logger
+from loguru import logger
 from calc import *
 from config import TOKEN
 
 storage = MemoryStorage()
 bot = Bot(TOKEN)
 dp = Dispatcher(bot, storage=storage)
-# logger.add('log_info.log',
-#            format="{time} - {level} - {message}",
-#            level='DEBUG')
+logger.add('log_info.log',
+           format="{time} - {level} - {message}",
+           level='DEBUG')
 
 class FSMData(StatesGroup):
     num_1 = State()
     action = State()
     num_2 = State()
+
 print("Bot activate")
+
 @dp.message_handler(commands='start', state=None)
 async def start(message: Message):
     await message.reply("Вас приветствует бот калькулятор.\nНаберите первое число.")
@@ -48,8 +50,10 @@ async def get_num_2(message: Message, state: FSMContext):
 
     res = obrabotka(data)
     if res == None:
+        logger.debug('Введены некорректные значения')
         await message.answer('Одно или несколько введённых значений некорректны')
     elif res == 'error':
+        logger.debug('Деление на ноль запрещено')
         await message.answer('Ай-ай-ай!!! На ноль делить нельзя!!!')
     else:
         await message.answer(f"{data['num_1']} "

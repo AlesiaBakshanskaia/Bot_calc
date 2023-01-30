@@ -14,12 +14,12 @@ def obrabotka(dic):
         return 'error'
     else:
         try:
-            aa = float(a)
-            cc = float(c)
+            aa = float(a.replace(',', '.'))
+            cc = float(c.replace(',', '.'))
             operation_lambda = operationsDict[b]
             result = operation_lambda(aa, cc)
             return result
-        except Exception as err:
+        except Exception:
             return None
 
     # if a.isfloat() and c.isfloat() and b in operationsDict:
